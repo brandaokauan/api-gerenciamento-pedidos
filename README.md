@@ -137,6 +137,21 @@ Respostas:
 - HTTP 400: status inválido.
 - HTTP 404: pedido inexistente.
 
+### Regras de transição de status
+
+A API permite apenas as seguintes transições:
+
+- recebido → em preparo ou cancelado
+- em preparo → pronto ou cancelado
+- pronto → entregue ou cancelado
+- entregue → nenhuma transição permitida
+- cancelado → nenhuma transição permitida
+
+Quando uma transição não é permitida, a API retorna HTTP 400
+com a mensagem "Transição de status inválida."
+
+Pedidos entregues ou cancelados não podem ter seu status alterado.
+  
 ## 6. Validações
 
 A API implementa as seguintes validações:

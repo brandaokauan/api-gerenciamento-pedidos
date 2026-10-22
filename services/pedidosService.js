@@ -46,27 +46,35 @@ function buscarPedidoPorId(id) {
 }
 
 function atualizarStatus(id, novoStatus) {
-    const pedido = buscarPedidoPorId(id);
+  const pedido = buscarPedidoPorId(id);
 
-    if (!pedido) {
-        throw new Error("Pedido não encontrado.");
-    }
+  if (!pedido) {
+    throw new Error("Pedido não encontrado.");
+  }
 
-    const statusPermitidos = [
-        "recebido",
-        "em preparo",
-        "pronto",
-        "entregue",
-        "cancelado"
-    ];
+  const transicoesPermitidas = {
+    "recebido": ["em preparo", "cancelado"],
+    "em preparo": ["pronto", "cancelado"],
+    "pronto": ["entregue", "cancelado"],
+    "entregue": [],
+    "cancelado": []
+  };
 
-    if (!statusPermitidos.includes(novoStatus)) {
-        throw new Error("Status inválido.");
-    }
+  const statusPermitidos = Object.keys(transicoesPermitidas);
 
-    pedido.status = novoStatus;
+  if (!statusPermitidos.includes(novoStatus)) {
+    throw new Error("Status inválido.");
+  }
 
-    return pedido;
+  const statusAtual = pedido.status;
+
+  if (!transicoesPermitidas[statusAtual].includes(novoStatus)) {
+    throw new Error("Transição de status inválida.");
+  }
+
+  pedido.status = novoStatus;
+
+  return pedido;
 }
 
 module.exports = {

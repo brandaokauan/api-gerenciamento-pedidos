@@ -67,3 +67,28 @@ describe("API de Gerenciamento de Pedidos", () => {
   });
 
 });
+
+test("Deve rejeitar transição de status inválida - HTTP 400", async () => {
+  const criacao = await request(app)
+    .post("/pedidos")
+    .send({
+      cliente: "Teste Transição",
+      tipo: "entrega",
+      valor: 100,
+      prioridade: "normal"
+    });
+
+  expect(criacao.status).toBe(201);
+
+  const id = criacao.body.id;
+
+  const resposta = await request(app)
+    .patch(`/pedidos/${id}/status`)
+    .send({ status: "entregue" });
+
+  expect(resposta.status).toBe(400);
+  expect(resposta.body).toHaveProperty(
+    "erro",
+    "Transição de status inválida."
+  );
+});

@@ -80,7 +80,9 @@ function atualizarStatus(req, res) {
             });
         }
 
-        if (erro.message === "Status inválido.") {
+        if (erro.message === "Status inválido." ||
+            erro.message === "Transição de status inválida.") 
+        {
             return res.status(400).json({
                 erro: erro.message
             });
